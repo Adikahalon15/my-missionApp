@@ -19,8 +19,7 @@ export const useSocket = (url: string) => {
     socket.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        
-        // מתרגמים את השדות לאופן שהAPI מכיר
+    
         dispatch(addMission({
           title: data.text || data.title || "משימה חדשה מהשרת",
           difficulty: Number(data.difficulty) || 1 
@@ -41,8 +40,6 @@ export const useSocket = (url: string) => {
       setStatus("closed");
       console.log("WebSocket Disconnected ");
     };
-
-    //ניקיון שנגמר התקשורת
     return () => {
       socket.close();
     };

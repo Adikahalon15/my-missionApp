@@ -18,7 +18,6 @@ export const MissionForm = () => {
   });
 
   const onSubmit = (data: IFormInput) => {
-    // עכשיו data.missionTitle תמיד יהיה מעודכן בגלל ה-Controller
     if (!data.missionTitle || data.missionTitle.trim() === "") return;
 
     dispatch(addMission({ 
@@ -26,7 +25,7 @@ export const MissionForm = () => {
       difficulty: Number(data.difficulty) 
     }));
 
-    reset({ missionTitle: '', difficulty: 1 }); // איפוס מפורש לערכים ריקים
+    reset({ missionTitle: '', difficulty: 1 }); 
   };
 
   return (
@@ -35,8 +34,7 @@ export const MissionForm = () => {
       
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          
-          {/* שימוש ב-Controller עבור השדה של הכותרת */}
+ 
           <Controller
             name="missionTitle"
             control={control}

@@ -20,7 +20,7 @@ export const missionSlice = createSlice({
   initialState, 
   reducers: {
     addMission: (state, action: PayloadAction<{ title: string; difficulty: number }>) => {
-      // הוספת משימה חדשה עם ID ייחודי בכל פעם
+   
       state.push({
         id: uuidv4(),
         title: action.payload.title,
@@ -29,7 +29,7 @@ export const missionSlice = createSlice({
       });
     },
     deleteMission: (state, action: PayloadAction<string>) => {
-      // החזרת מערך חדש ללא המשימה שנמחקה
+
       return state.filter(mission => mission.id !== action.payload);
     },
     toggleComplete: (state, action: PayloadAction<string>) => {

@@ -13,17 +13,16 @@ const missionPool = [
   { title: "Perform mobile responsiveness check", difficulty: 3 }
 ];
 
-console.log('🚀 Server is running on: ws://localhost:8080');
+console.log('Server is running on');
 
 wss.on('connection', (ws) => {
   console.log(' New client connected');
 
   const sendRandomMission = () => {
-    // Pick a random mission from the pool
+
     const randomIndex = Math.floor(Math.random() * missionPool.length);
     const randomMission = missionPool[randomIndex];
 
-    // Add a "pepper" - current timestamp to see real-time updates
     const timeString = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     
     const missionToSend = {
@@ -37,10 +36,7 @@ wss.on('connection', (ws) => {
     }
   };
 
-  // Send the first mission immediately upon connection
   sendRandomMission();
-
-  // Send a random mission every 15 seconds
   const interval = setInterval(sendRandomMission, 15000);
 
   ws.on('close', () => {
