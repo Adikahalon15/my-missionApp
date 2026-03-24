@@ -1,8 +1,7 @@
-{/* This file responsible for the form feilds */}
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form'; // הוספנו Controller
 import { useDispatch } from 'react-redux';
 import { addMission } from '../store/missionSlice';
-import { Paper, TextField, Button, Box } from '@mui/material';
+import { Paper, TextField, Button, Box, Typography } from '@mui/material';
 
 interface IFormInput {
   missionTitle: string;
@@ -11,34 +10,69 @@ interface IFormInput {
 
 export const MissionForm = () => {
   const dispatch = useDispatch();
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<IFormInput>();
+  const { handleSubmit, reset, control, formState: { errors } } = useForm<IFormInput>({
+    defaultValues: {
+      missionTitle: '',
+      difficulty: 1
+    }
+  });
 
   const onSubmit = (data: IFormInput) => {
-    if (!data.missionTitle.trim()) return;
+    // עכשיו data.missionTitle תמיד יהיה מעודכן בגלל ה-Controller
+    if (!data.missionTitle || data.missionTitle.trim() === "") return;
+
     dispatch(addMission({ 
-      title: data.missionTitle, 
+      title: data.missionTitle.trim(), 
       difficulty: Number(data.difficulty) 
     }));
-    reset(); 
+
+    reset({ missionTitle: '', difficulty: 1 }); // איפוס מפורש לערכים ריקים
   };
 
   return (
-    <Paper sx={{ p: 3, width: '100%', maxWidth: 400 }}>
-      <h3>Add New Mission</h3>
+    <Paper elevation={3} sx={{ p: 3, width: '100%', maxWidth: 400, mx: 'auto', mt: 2 }}>
+      <Typography variant="h6" gutterBottom align="center">Add New Mission</Typography>
+      
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <TextField 
-            label="Mission Title" 
-            {...register("missionTitle", { required: "Title is required" })}
-            error={!!errors.missionTitle}
-            helperText={errors.missionTitle?.message}
+          
+          {/* שימוש ב-Controller עבור השדה של הכותרת */}
+          <Controller
+            name="missionTitle"
+            control={control}
+            rules={{ required: "Title is required", minLength: 2 }}
+            render={({ field }) => (
+              <TextField 
+                {...field}
+                label="Mission Title" 
+                variant="outlined"
+                fullWidth
+                error={!!errors.missionTitle}
+                helperText={errors.missionTitle?.message}
+              />
+            )}
           />
-          <TextField 
-            label="Difficulty (1-10)" 
-            type="number"
-            {...register("difficulty", { required: true, min: 1, max: 10 })}
+
+          <Controller
+            name="difficulty"
+            control={control}
+            rules={{ required: true, min: 1, max: 10 }}
+            render={({ field }) => (
+              <TextField 
+                {...field}
+                label="Difficulty (1-10)" 
+                type="number"
+                variant="outlined"
+                fullWidth
+                error={!!errors.difficulty}
+                helperText={errors.difficulty ? "1-10 required" : ""}
+              />
+            )}
           />
-          <Button type="submit" variant="contained">Add Mission</Button>
+          
+          <Button type="submit" variant="contained" color="primary" size="large" fullWidth>
+            Add Mission
+          </Button>
         </Box>
       </form>
     </Paper>
